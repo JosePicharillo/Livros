@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Livros</string>
+    <string name="name">Name</string>
+    <string name="titulo">Título</string>
+    <string name="isbn">ISBN</string>
+    <string name="edicao">Edição</string>
+    <string name="paginas">Páginas</string>
+    <string name="salvar">Salvar</string>
+    <string name="adicionar_livro">Adicionar Livro</string>
+    <string name="autor">Autor</string>
+    <string name="editora">Editora</string>
+    <string name="editar">Editar</string>
+    <string name="remover">Remover</string>
+    <string name="sair">Sair</string>
+</resources>
