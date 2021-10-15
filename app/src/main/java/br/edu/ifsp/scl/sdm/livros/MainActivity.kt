@@ -10,11 +10,12 @@ import android.widget.AdapterView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import br.edu.ifsp.scl.sdm.livros.adapter.LivrosAdapter
+import androidx.recyclerview.widget.LinearLayoutManager
+import br.edu.ifsp.scl.sdm.livros.adapter.LivrosRvAdapter
 import br.edu.ifsp.scl.sdm.livros.databinding.ActivityMainBinding
 import br.edu.ifsp.scl.sdm.livros.model.Livro
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), OnLivroClickListener {
 
     companion object Extras {
         const val EXTRA_LIVRO = "EXTRA_LIVRO"
@@ -29,8 +30,13 @@ class MainActivity : AppCompatActivity() {
     private val livrosList: MutableList<Livro> = mutableListOf()
 
     // Adapter
-    private val livrosAdapter: LivrosAdapter by lazy {
-        LivrosAdapter(this, livrosList)
+    private val livrosAdapter: LivrosRvAdapter by lazy {
+        LivrosRvAdapter(this, livrosList)
+    }
+
+    // Layout Manager
+    private val livrosLayoutManager: LinearLayoutManager by lazy {
+        LinearLayoutManager(this)
     }
 
     // Activity Result Launchers
@@ -44,7 +50,9 @@ class MainActivity : AppCompatActivity() {
         //Inicializa lista de livros
         inicializarLivrosList()
 
-        activityMainBinding.livrosLv.adapter = livrosAdapter
+        // Associa View com o Adapter e com o LayoutManager
+        activityMainBinding.livrosRv.adapter = livrosAdapter
+        activityMainBinding.livrosRv.layoutManager = livrosLayoutManager
 
         livroActivityResultLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { resultado ->
@@ -69,15 +77,8 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-        activityMainBinding.livrosLv.setOnItemClickListener { _, _, posicao, _ ->
-            val livro = livrosList[posicao]
-            val consultarLivroIntent = Intent(this, LivroActivity::class.java)
-            consultarLivroIntent.putExtra(EXTRA_LIVRO, livro)
-            startActivity(consultarLivroIntent)
-        }
-
         // Associa ListView com o menu de contexto
-        registerForContextMenu(activityMainBinding.livrosLv)
+        //registerForContextMenu(activityMainBinding.livrosRv)
 
         //Tratando evento de clique no Fab
         activityMainBinding.adicionarLivroFab.setOnClickListener {
@@ -102,19 +103,19 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    //Usar Menu de Contexto
-    override fun onCreateContextMenu(
-        menu: ContextMenu?,
-        v: View?,
-        menuInfo: ContextMenu.ContextMenuInfo?
-    ) {
-        super.onCreateContextMenu(menu, v, menuInfo)
-        menuInflater.inflate(R.menu.context_menu_main, menu)
-    }
+    //Usar Menu de Contexto (ListView)
+//    override fun onCreateContextMenu(
+//        menu: ContextMenu?,
+//        v: View?,
+//        menuInfo: ContextMenu.ContextMenuInfo?
+//    ) {
+//        super.onCreateContextMenu(menu, v, menuInfo)
+//        menuInflater.inflate(R.menu.context_menu_main, menu)
+//    }
 
     //Selecionar opções do menu de contexto
     override fun onContextItemSelected(item: MenuItem): Boolean {
-        val posicao = (item.menuInfo as AdapterView.AdapterContextMenuInfo).position
+        val posicao = livrosAdapter.posicao
 
         return when (item.itemId) {
             R.id.editarLivroMi -> {
@@ -151,5 +152,12 @@ class MainActivity : AppCompatActivity() {
                 )
             )
         }
+    }
+
+    override fun onLivroClick(posicao: Int) {
+        val livro = livrosList[posicao]
+        val consultarLivroIntent = Intent(this, LivroActivity::class.java)
+        consultarLivroIntent.putExtra(EXTRA_LIVRO, livro)
+        startActivity(consultarLivroIntent)
     }
 }

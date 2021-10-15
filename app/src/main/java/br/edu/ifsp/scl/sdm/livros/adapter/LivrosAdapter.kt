@@ -36,13 +36,6 @@ class LivrosAdapter(
                     layoutLivroBinding.textViewEditora
                 )
             }
-//            val livroLayoutHolder = LivroLayoutHolder(
-//                layoutLivroBinding.textViewTitulo,
-//                layoutLivroBinding.textViewAutor,
-//                layoutLivroBinding.textViewEditora
-//            )
-//
-//            layoutLivroBinding.root.tag = livroLayoutHolder
             layoutLivroBinding.root
         }
 
